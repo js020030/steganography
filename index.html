@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>퀀텀 워페어: 미디어 저작권 수호 작전 V9.7</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        :root {
+            /* 하드코어 사이버펑크 팔레트 */
+            --bg-deep: #050505;
+            --panel-bg: rgba(10, 10, 15, 0.85);
+            --border-subtle: rgba(34, 211, 238, 0.3);
+            
+            --accent-cyan: #00f0ff;
+            --accent-cyan-dim: rgba(0, 240, 255, 0.15);
+            
+            --accent-pink: #ff003c; /* 정통 사이버펑크 핑크/레드 */
+            --accent-pink-dim: rgba(255, 0, 60, 0.15);
+            
+            --accent-yellow: #fcee0a; /* 사이버펑크 옐로우 포인트 */
+            --accent-green: #39ff14;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            /* 사이버펑크 그리드 및 배경 이미지 합성 */
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                radial-gradient(circle at 50% 50%, rgba(20, 20, 30, 0.8), #000 100%),
+                url('https://images.unsplash.com/photo-1605806616949-1e87b487cb2a?q=80&w=1920&auto=format&fit=crop');
+            background-size: 40px 40px, 40px 40px, 100% 100%, cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-blend-mode: overlay, overlay, normal, overlay;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            color: #e4e4e7;
+            /* 폰트 전면 교체 */
+            font-family: 'Share Tech Mono', ui-monospace, SFMono-Regular, monospace;
+        }
+
+        h1, h2, h3, h4, .orbitron {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* 날카로운 사이버 패널 (둥근 모서리 제거, 네온 보더 강조) */
+        .cyber-panel { 
+            background: var(--panel-bg); 
+            border: 1px solid var(--border-subtle); 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 0 15px var(--accent-cyan-dim), inset 0 0 20px rgba(0,0,0,0.8);
+            border-radius: 0; /* 각진 모서리 */
+            position: relative;
+            overflow: visible;
+            transition: all 0.3s ease;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+        }
+        
+        .cyber-panel:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 25px var(--accent-cyan-dim), inset 0 0 20px rgba(0,0,0,0.8);
+        }
+
+        /* 패널 장식용 테크 브라켓 */
+        .cyber-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 20px; height: 3px;
+            background: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+        .cyber-panel::after {
+            content: ''; position: absolute; bottom: 0; right: 20px; width: 40px; height: 3px;
+            background: var(--accent-cyan);
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        .cyber-panel-danger { border-color: rgba(255, 0, 60, 0.4); box-shadow: 0 0 20px var(--accent-pink-dim); }
+        .cyber-panel-danger::before, .cyber-panel-danger::after { background: var(--accent-pink); box-shadow: 0 0 10px var(--accent-pink); }
+        
+        .cyber-panel-success { border-color: rgba(57, 255, 20, 0.4); box-shadow: 0 0 20px rgba(57, 255, 20, 0.1); }
+        .cyber-panel-success::before, .cyber-panel-success::after { background: var(--accent-green); box-shadow: 0 0 10px var(--accent-green); }
+
+        /* 세련된 텍스트 그라데이션 및 글로우 (타이틀 전용으로 제한) */
+        .text-neon-cyan {
+            color: var(--accent-cyan);
+            text-shadow: 0 0 5px var(--accent-cyan);
+        }
+        .text-neon-pink {
+            color: var(--accent-pink);
+            text-shadow: 0 0 5px var(--accent-pink);
+        }
+        .text-neon-yellow {
+            color: var(--accent-yellow);
+            text-shadow: 0 0 5px var(--accent-yellow);
+        }
+
+        /* 기존 옐로우 톤에서 핑크 톤으로 교체된 용어 사전 링크 */
+        .term-link { 
+            color: var(--accent-pink); 
+            font-weight: bold; 
+            text-decoration: none; 
+            cursor: help; 
+            background: rgba(255, 0, 60, 0.1); /* 핑크색 반투명 배경 */
+            padding: 2px 6px; 
+            border: 1px solid rgba(255, 0, 60, 0.3); /* 핑크색 테두리 */
+            border-radius: 0;
+            transition: all 0.2s;
+        }
+        .term-link:hover { 
+            background: var(--accent-pink); 
+            color: #fff; /* 핑크 배경에 대비되도록 흰색 텍스트로 변경 */
+            box-shadow: 0 0 12px var(--accent-pink); /* 핑크색 글로우 효과 */
+        }
+
+        .cursor-blink { animation: blink 1s step-end infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* 고급스러운 스크롤바 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--accent-cyan); }
+        ::-webkit-scrollbar-track { background: #111; border-left: 1px solid #333; }
+        .terminal-scroll::-webkit-scrollbar-thumb { background: var(--accent-green); }
+
+        /* 각진 사이버펑크 버튼 (Clip-path) */
+        .btn-premium {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            transition: all 0.2s;
+            position: relative;
+            text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+            /* 모서리 자르기 */
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+            border-radius: 0;
+        }
+        .btn-premium::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--accent-cyan);
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-premium:hover { 
+            color: #000;
+            font-weight: 900;
+            box-shadow: 0 0 15px var(--accent-cyan);
+        }
+        .btn-premium:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        .btn-premium:active { transform: scale(0.98); }
+
+        .btn-danger {
+            background: rgba(255, 0, 60, 0.1);
+            border: 1px solid var(--accent-pink);
+            color: var(--accent-pink);
+        }
+        .btn-danger::before { background: var(--accent-pink); }
+        .btn-danger:hover { box-shadow: 0 0 15px var(--accent-pink); color: #fff;}
+
+        /* 날카로운 인풋 필드 */
+        input[type="text"], input[type="password"], input[type="file"] {
+            background-color: rgba(0, 0, 0, 0.8) !important;
+            border: 1px solid rgba(255,255,255,0.2) !important;
+            border-left: 3px solid var(--accent-cyan) !important;
+            color: var(--accent-cyan) !important;
+            border-radius: 0 !important;
+            transition: all 0.2s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: var(--accent-cyan) !important;
+            outline: none !important;
+            box-shadow: inset 0 0 10px var(--accent-cyan-dim) !important;
+        }
+
+        /* 동적 스캔라인(CRT) 효과 - 가독성을 위해 투명도 대폭 완화 */
+        body::after {
+            content: " ";
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.15; /* 기존 0.6에서 0.15로 대폭 축소하여 노이즈 제거 */
+        }
+
+        /* 글리치 애니메이션 효과 */
+        .glitch {
+            position: relative;
+            display: inline-block;
+        }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-deep);
+        }
+        .glitch::before {
+            left: 2px;
+            text-shadow: -1px 0 red;
+            clip-path: inset(24% 0 58% 0);
+            animation: glitch-anim-1 2s infinite linear alternate-reverse;
+        }
+        .glitch::after {
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            clip-path: inset(54% 0 7% 0);
+            animation: glitch-anim-2 3s infinite linear alternate-reverse;
+        }
+        @keyframes glitch-anim-1 {
+            0% { clip-path: inset(20% 0 80% 0); }
+            20% { clip-path: inset(60% 0 10% 0); }
+            40% { clip-path: inset(40% 0 50% 0); }
+            60% { clip-path: inset(80% 0 5% 0); }
+            80% { clip-path: inset(10% 0 70% 0); }
+            100% { clip-path: inset(30% 0 20% 0); }
+        }
+        @keyframes glitch-anim-2 {
+            0% { clip-path: inset(10% 0 60% 0); }
+            20% { clip-path: inset(30% 0 20% 0); }
+            40% { clip-path: inset(70% 0 10% 0); }
+            60% { clip-path: inset(20% 0 50% 0); }
+            80% { clip-path: inset(50% 0 30% 0); }
+            100% { clip-path: inset(5% 0 80% 0); }
+        }
+    </style>
+</head>
+<body class="font-sans min-h-screen flex flex-col justify-between selection:bg-cyan-500/50 selection:text-black break-keep">
+
+    <header class="border-b border-cyan-500/30 p-4 backdrop-blur-xl sticky top-0 z-50 bg-black/90">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="w-2 h-6 bg-cyan-400"></span>
+                <h1 class="text-xl md:text-2xl font-black tracking-widest text-white break-keep glitch" data-text="QUANTUM_WARFARE">
+                    QUANTUM<span class="text-zinc-600">_</span>WARFARE <span class="text-sm font-medium text-black px-2 py-0.5 ml-2 bg-cyan-400">v9.7</span>
+                </h1>
+            </div>
+            <div class="flex items-center gap-3 bg-black border border-cyan-500/50 px-4 py-1.5" style="clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);">
+                <img src="https://images.unsplash.com/photo-1589254065878-42c9da997008?q=80&w=150&auto=format&fit=crop" alt="Sheriff Avatar" class="w-6 h-6 object-cover border border-cyan-400">
+                <span class="text-xs text-cyan-400 font-bold hidden md:inline break-keep uppercase tracking-widest">연방 미디어 보안관</span>
+                <span class="w-2 h-2 bg-red-500 animate-pulse hidden md:block"></span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 items-start relative z-10 mt-4">
+        
+        <div class="lg:col-span-3 flex flex-col justify-center min-h-[550px] w-full">
+            
+            <div id="stage-intro" class="cyber-panel p-8 md:p-12">
+                <div class="relative z-10">
+                    <div class="inline-flex items-center gap-2 bg-black border border-cyan-800 px-3 py-1.5 mb-8 text-cyan-400 text-xs tracking-wider break-keep uppercase">
+                        <span class="w-2 h-2 bg-cyan-400"></span> MISSION_BRIEFING // 퀀텀_가드
+                    </div>
+
+                    <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-8 leading-[1.2] break-keep uppercase">
+                        데이터 도메인 주권 확보 <br>
+                        <span class="text-neon-cyan inline-block mt-2 glitch" data-text="스테가노그라피 은닉 작전">스테가노그라피 은닉 작전</span>
+                    </h2>
+
+                    <div class="grid md:grid-cols-5 gap-8 items-center bg-black/60 p-6 border border-zinc-800 mb-10 backdrop-blur-sm relative" style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);">
+                        <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-500"></div>
+                        <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-500"></div>
+                        
+                        <div class="md:col-span-1 text-center flex flex-col items-center gap-3">
+                            <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=200&auto=format&fit=crop" alt="Hacker threat" class="w-20 h-20 object-cover border-2 border-pink-500 filter grayscale contrast-150">
+                            <span class="text-[10px] text-pink-500 font-bold tracking-widest break-keep">TARGET_블랙햇</span>
+                        </div>
+                        <div class="md:col-span-3 text-zinc-300 leading-relaxed text-sm space-y-4 font-medium break-keep">
+                            <p>가까운 미래, 해커 클랜이 무단 탈취한 양자 컴퓨터로 디지털 인프라를 공격 중입니다. 그들의 <span class="term-link" onclick="showTerm('shor')">Shor 알고리즘</span> 앞에 고전 암호 기반 <span class="term-link" onclick="showTerm('drm')">DRM</span> 방화벽은 무력화되었습니다.</p>
+                            <p class="text-yellow-400 font-bold uppercase tracking-wide">당신은 연방 보안관입니다. 파일이 탈취당하더라도 미디어 내부 픽셀에 저작권을 물리적으로 각인하여 최종 유출자를 검거하십시오.</p>
+                        </div>
+                        <div class="md:col-span-1 text-center flex flex-col items-center gap-3">
+                            <img src="https://images.unsplash.com/photo-1589254065878-42c9da997008?q=80&w=200&auto=format&fit=crop" alt="Sheriff Avatar" class="w-20 h-20 object-cover border-2 border-cyan-400">
+                            <span class="text-[10px] text-cyan-400 font-bold tracking-widest break-keep">PLAYER_보안관</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-12">
+                        <button onclick="nextStage('stage-intro', 'stage-prep')" class="btn-premium text-sm font-bold tracking-widest px-12 py-4 break-keep">
+                            제어 콘솔 가동 [ EXECUTE ]
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-prep" class="hidden cyber-panel p-8">
+                <div class="flex items-center gap-4 border-b border-cyan-500/30 pb-4 mb-6">
+                    <div class="w-10 h-10 bg-cyan-900/50 border-2 border-cyan-400 flex items-center justify-center text-cyan-400 font-bold text-sm orbitron">01</div>
+                    <h3 class="text-white font-bold text-xl tracking-tight break-keep orbitron">원본 자산 보안 식별자 이식</h3>
+                    <div class="ml-auto text-[10px] tracking-widest text-cyan-500 hidden sm:block animate-pulse">SYS_INIT...</div>
+                </div>
+                
+                <p class="text-sm text-zinc-400 mb-8 leading-relaxed break-keep font-medium">
+                    미디어 자산에 물리적 저작권 증거를 이식해야 합니다. 방어막이 깨져도 데이터의 <span class="term-link" onclick="showTerm('lsb')">최하위 비트(LSB)</span> 영역에 암호화된 상태로 통합되어 유출자를 추적할 수 있습니다.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-black border border-zinc-800 p-6 flex flex-col items-center justify-center space-y-5 relative">
+                        <div class="absolute top-2 left-2 text-[8px] text-cyan-500">REC 🔴</div>
+                        <span class="text-[10px] text-zinc-500 tracking-widest break-keep orbitron">ASSET PREVIEW</span>
+                        <div class="relative group z-10 w-full max-w-[220px]">
+                            <canvas id="mainCanvas" width="250" height="250" class="border border-cyan-500/30 bg-zinc-900 w-full h-auto object-cover"></canvas>
+                        </div>
+                        <input type="file" id="uploadImg" accept="image/png, image/jpeg" class="w-full text-xs text-zinc-400 file:mr-4 file:py-2 file:px-4 file:border-0 file:font-bold file:bg-cyan-500 file:text-black hover:file:bg-white cursor-pointer bg-black p-1 border border-zinc-700">
+                        <div id="capacityInfo" class="text-[11px] tracking-tight bg-black text-cyan-400 px-4 py-3 border border-cyan-800 w-full text-center break-keep">
+                            데이터 분석 중...
+                        </div>
+                    </div>
+
+                    <div class="space-y-6 flex flex-col justify-center">
+                        <div class="bg-black p-6 border border-zinc-800 space-y-5">
+                            <div>
+                                <label class="text-[11px] text-yellow-400 font-bold block mb-2 tracking-wide break-keep uppercase">기밀 식별 메시지 주입</label>
+                                <input type="text" id="secretMsg" value="[TRACKER] OWNER: SHERIFF // IP: 211.45.1.9" class="w-full p-3 text-[11px]">
+                            </div>
+                            <div>
+                                <label class="text-[11px] text-yellow-400 font-bold block mb-2 tracking-wide break-keep uppercase"><span class="term-link text-[11px] px-1 py-0 border-none bg-transparent" onclick="showTerm('aes')">AES-GCM</span> 대칭 키</label>
+                                <input type="password" id="cryptoPw" placeholder="암호화 키 입력" class="w-full p-3 text-xs tracking-widest">
+                            </div>
+                        </div>
+                        
+                        <div id="dataStats" class="hidden grid grid-cols-2 gap-4 text-[11px] bg-black p-4 border border-zinc-800 text-center uppercase">
+                            <div class="text-zinc-500 border-r border-zinc-800 pr-2">RAW DATA <br><span id="statMsgLen" class="text-white font-bold text-sm mt-1 inline-block">0</span> B</div>
+                            <div class="text-zinc-500 pl-2">GCM ENCRYPT <br><span id="statEncLen" class="text-cyan-400 font-bold text-sm mt-1 inline-block">0</span> B</div>
+                        </div>
+
+                        <button onclick="applyCryptoStego()" class="btn-premium w-full font-bold py-4 px-4 text-[13px] tracking-wide break-keep">
+                            식별자 암호화 및 픽셀 이식 [ RUN ]
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-attack" class="hidden cyber-panel cyber-panel-danger p-8">
+                <div class="flex items-center justify-between border-b border-pink-500/30 pb-4 mb-6 flex-wrap gap-2">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-pink-900/50 border-2 border-pink-500 flex items-center justify-center text-pink-400 font-bold text-sm orbitron">02</div>
+                        <h3 class="text-white font-bold text-xl tracking-tight break-keep orbitron">양자 그리드 공격 감지</h3>
+                    </div>
+                    <span class="text-[10px] text-white bg-pink-600 px-2 py-1 tracking-widest flex items-center gap-2 uppercase animate-pulse">⚠️ INTRUDER_DETECTED</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-8 items-center bg-black p-6 border border-pink-900/50">
+                    <div class="md:col-span-2 text-center flex flex-col items-center gap-4 relative justify-center">
+                        <div class="absolute inset-0 border border-pink-500/20 animate-ping"></div>
+                        <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=400&auto=format&fit=crop" class="w-32 h-32 border-2 border-pink-500 object-cover filter grayscale contrast-150 relative z-10">
+                    </div>
+                    
+                    <div class="md:col-span-3 space-y-6">
+                        <p class="text-[13px] text-zinc-300 leading-relaxed bg-black p-5 border-l-4 border-pink-500 break-keep font-medium">
+                            블랙햇 해커가 <span class="term-link" onclick="showTerm('shor')">Shor 알고리즘</span>으로 DRM 아키텍처를 강제 복호화 중입니다. <span class="text-pink-400 font-bold block mt-2 text-[12px] tracking-wider uppercase">방어 시냅스를 가동하십시오.</span>
+                        </p>
+                        
+                        <div class="space-y-3">
+                            <div class="flex justify-between text-[11px] orbitron">
+                                <span class="text-pink-400 font-bold tracking-wide break-keep">DRM MATRIX COLLAPSE</span>
+                                <span id="hack-percent" class="text-white font-bold bg-pink-600 px-1">0%</span>
+                            </div>
+                            <div class="w-full bg-black h-4 border border-zinc-700 relative overflow-hidden">
+                                <div id="hack-bar" class="bg-pink-600 h-full transition-all duration-[50ms]" style="width: 0%"></div>
+                                <div class="absolute top-0 left-0 w-full h-full bg-[linear-gradient(90deg,transparent_90%,rgba(0,0,0,0.5)_100%)] bg-[length:10px_100%] pointer-events-none"></div>
+                            </div>
+                        </div>
+                        
+                        <button onclick="defendHack()" class="btn-premium btn-danger w-full py-4 px-4 text-[13px] font-bold tracking-widest break-keep orbitron">
+                            방어 연산 (클릭) [ DEFEND ]
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-terminal" class="hidden relative h-[550px] border border-green-500/30 bg-[#050a06] overflow-hidden" style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%);">
+                <div class="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.5)_50%)] bg-[length:100%_4px] pointer-events-none z-20 opacity-30"></div>
+                
+                <div id="terminal-scroll-area" class="relative z-10 p-8 h-full flex flex-col text-green-400 overflow-y-auto terminal-scroll break-keep">
+                    <div class="border-b border-green-500/30 pb-3 mb-6 flex justify-between text-[10px] text-green-600 shrink-0 font-bold tracking-widest uppercase">
+                        <span>SYS_OVERRIDE //</span>
+                        <span class="hidden sm:inline text-pink-500 animate-pulse">ERR: QUANTUM_BREACH</span>
+                    </div>
+                    
+                    <div class="flex-grow">
+                        <div id="typewriter-text" class="text-[14px] leading-[1.8] tracking-wide space-y-2 text-green-400 break-keep font-medium"></div>
+                        <div><span id="cursor-block" class="cursor-blink text-green-400 font-bold inline-block mt-2 text-lg">█</span></div>
+                    </div>
+
+                    <div class="mt-8 text-center shrink-0 flex flex-col items-center gap-4 relative z-30">
+                        <button id="btn-skip-typing" onclick="skipTyping()" class="text-[10px] text-zinc-500 hover:text-green-400 hover:bg-green-900/30 px-2 py-1 transition-colors cursor-pointer break-keep tracking-widest border border-transparent hover:border-green-500 uppercase">
+                            [ SKIP ]
+                        </button>
+                        <button id="btn-continue-recovery" onclick="nextStage('stage-terminal', 'stage-recovery')" class="hidden bg-black hover:bg-green-900/50 border border-green-500 text-green-400 text-sm font-bold px-8 py-4 transition-all w-full md:w-auto break-keep tracking-widest uppercase">
+                            물리 식별자 복구 모드 진입 [ ENTER ]
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-recovery" class="hidden cyber-panel p-8">
+                <div class="flex items-center gap-4 border-b border-cyan-500/30 pb-4 mb-6">
+                    <div class="w-10 h-10 bg-cyan-900/50 border-2 border-cyan-400 flex items-center justify-center text-cyan-400 font-bold text-sm orbitron">03</div>
+                    <h3 class="text-white font-bold text-xl tracking-tight break-keep orbitron">유출 자산 역추적 분석</h3>
+                    <div class="ml-auto text-[10px] tracking-widest text-cyan-500 hidden sm:block animate-pulse">TRACING...</div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+                    <div class="md:col-span-3 text-[13px] text-zinc-300 leading-relaxed font-medium bg-black p-5 border-l-2 border-cyan-500 h-full break-keep relative">
+                        <p>수학적 방어막은 무너졌으나, 미디어 데이터 공간에 은닉된 <span class="term-link" onclick="showTerm('stego')">스테가노그라피</span> 픽셀 구조는 살아있습니다. 유출된 이미지 속 기밀 식별 메시지를 디코딩합니다.</p>
+                        <div class="absolute right-2 bottom-2 text-[8px] text-cyan-700 font-bold">NODE_09</div>
+                    </div>
+                    <div class="md:col-span-2 text-center flex items-center gap-4 bg-black p-4 border border-zinc-800 relative">
+                        <div class="absolute top-0 right-0 w-2 h-2 bg-cyan-500"></div>
+                        <img src="https://images.unsplash.com/photo-1589254065878-42c9da997008?q=80&w=200&auto=format&fit=crop" class="w-14 h-14 border border-cyan-500 object-cover shrink-0 filter contrast-150">
+                        <div class="text-left space-y-1">
+                            <div class="text-[11px] text-cyan-400 font-bold tracking-wide break-keep uppercase">AGENT_ALPHA</div>
+                            <div class="text-zinc-600 text-[9px] tracking-widest uppercase">PIXEL ANALYSIS</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="text-center space-y-4 bg-black p-6 border border-zinc-800 h-full flex flex-col justify-center">
+                        <span class="text-[10px] text-pink-500 tracking-widest font-bold block break-keep uppercase">다크웹 수거본 (EVIDENCE)</span>
+                        <canvas id="leakedCanvas" width="250" height="250" class="border border-pink-500/50 bg-zinc-900 mx-auto max-w-full h-auto object-cover"></canvas>
+                        <a id="downloadBtn" class="text-[10px] bg-zinc-900 text-white px-3 py-1 inline-block mx-auto border border-zinc-700 hover:border-cyan-500 hover:text-cyan-400 transition-colors cursor-pointer tracking-widest mt-2 break-keep uppercase">DOWNLOAD_RAW</a>
+                    </div>
+                    
+                    <div class="space-y-6 h-full flex flex-col justify-center">
+                        <div class="bg-black p-5 border border-zinc-800 text-[10px] space-y-2 break-keep tracking-wider uppercase">
+                            <span class="text-zinc-500 block mb-2 border-b border-zinc-800 pb-1">// BINARY STREAM CHECK</span>
+                            <div class="text-pink-500">▶ DRM_STATUS: BROKEN</div>
+                            <div class="text-cyan-400">▶ PIXEL_MATRIX: ACTIVE</div>
+                            <div class="text-green-400">▶ LSB_ANOMALY: DETECTED</div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[11px] text-yellow-400 font-bold block tracking-wide break-keep uppercase">복호화 대칭 키 입력</label>
+                            <input type="password" id="extractPw" placeholder="패스워드 입력" class="w-full p-3 text-xs tracking-widest">
+                        </div>
+                        <button onclick="extractCryptoStego()" class="btn-premium w-full font-bold py-4 px-4 text-[13px] tracking-widest break-keep">
+                            식별자 복원 [ DECODE ]
+                        </button>
+                        
+                        <div id="errorBox" class="hidden bg-pink-900/30 border border-pink-500 p-4 text-[10px] text-center text-white tracking-widest break-keep uppercase">
+                            ERR: 복원 실패 (키 불일치)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stage-result" class="hidden cyber-panel cyber-panel-success p-8 md:p-12 text-center space-y-8">
+                <div class="inline-flex p-4 bg-green-500/10 text-4xl border border-green-500/50">🏆</div>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight break-keep uppercase orbitron">
+                    주권 수호 <span class="text-neon-cyan">성공</span>
+                </h2>
+                <p class="text-zinc-300 max-w-xl mx-auto leading-relaxed text-[14px] font-medium break-keep">
+                    방어막 붕괴에도 불구하고, <span class="term-link" onclick="showTerm('stego')">공간적 은닉(LSB)</span> 기술로 픽셀 속에 보존된 유포자 식별 정보를 완벽하게 추출해 냈습니다.
+                </p>
+                
+                <div class="bg-black border border-cyan-500 p-6 max-w-2xl mx-auto relative" style="clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-cyan-500"></div>
+                    <span class="text-[10px] text-yellow-400 font-bold tracking-widest block mb-3 break-keep uppercase">DECODED_DATA_FOUND:</span>
+                    <span id="finalMsg" class="font-bold text-white text-sm md:text-lg break-all tracking-wide bg-cyan-900/50 px-4 py-2 border border-cyan-800 inline-block"></span>
+                </div>
+
+                <div class="bg-black border border-zinc-800 p-6 w-full">
+                    <h4 class="text-[11px] font-bold text-cyan-400 mb-6 tracking-widest flex items-center justify-center gap-2 break-keep uppercase orbitron">
+                        [ PIXEL_FORENSIC ] LSB 변조 실증 증폭
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <div class="bg-black p-4 border border-zinc-800">
+                            <span class="text-[10px] text-zinc-500 block mb-3 tracking-widest break-keep uppercase">01_ORIGINAL</span>
+                            <canvas id="resOrigCanvas" width="200" height="200" class="border border-zinc-700 bg-zinc-900 mx-auto w-full max-w-[160px] h-auto object-cover"></canvas>
+                        </div>
+                        <div class="bg-black p-4 border border-zinc-800">
+                            <span class="text-[10px] text-zinc-500 block mb-3 tracking-widest break-keep uppercase">02_STEGO (유출본)</span>
+                            <canvas id="resStegoCanvas" width="200" height="200" class="border border-zinc-700 bg-zinc-900 mx-auto w-full max-w-[160px] h-auto object-cover"></canvas>
+                        </div>
+                        <div class="bg-black p-4 border border-pink-500 relative">
+                            <div class="absolute top-2 left-2 w-2 h-2 border-t border-l border-pink-500"></div>
+                            <div class="absolute top-2 right-2 w-2 h-2 border-t border-r border-pink-500"></div>
+                            <div class="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-pink-500"></div>
+                            <div class="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-pink-500"></div>
+                            
+                            <span class="text-[10px] text-pink-500 font-bold block mb-3 tracking-widest break-keep uppercase">03_DIFF (차이값 x255)</span>
+                            <canvas id="resDiffCanvas" width="200" height="200" class="border border-pink-900 bg-black mx-auto w-full max-w-[160px] h-auto object-cover"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left w-full h-full mt-4">
+                    <div class="bg-black border border-zinc-800 p-6 space-y-5">
+                        <div class="text-[12px] text-yellow-400 font-bold tracking-widest border-b border-zinc-700 pb-3 break-keep uppercase orbitron">
+                            REPORT_SUMMARY
+                        </div>
+                        <div class="flex justify-between items-center break-keep text-[11px] uppercase"><span class="text-zinc-500">PAYLOAD_SIZE</span> <span id="finalEncLen" class="text-white font-bold"></span></div>
+                        <div class="flex justify-between items-center break-keep text-[11px] uppercase"><span class="text-zinc-500">DOMAIN_USAGE</span> <span id="finalUsage" class="text-white font-bold"></span></div>
+                        <div class="flex justify-between items-center border-t border-zinc-800 pt-4 mt-2 break-keep uppercase bg-zinc-900 px-3 py-2">
+                            <span class="text-green-500 text-[10px] font-bold tracking-widest">FINAL_SCORE</span> 
+                            <span id="finalScore" class="text-green-400 font-bold text-lg"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-black border border-zinc-800 p-6 flex flex-col h-full relative">
+                        <div class="text-[12px] text-cyan-400 font-bold tracking-widest border-b border-zinc-700 pb-3 flex items-center justify-between mb-2 shrink-0 break-keep uppercase orbitron">
+                            <span>MEDIA_PRINCIPLES</span>
+                            <span class="text-[10px] text-black bg-cyan-400 px-1">P.<span id="review-page-num" class="ml-1">1</span></span>
+                        </div>
+                        
+                        <div class="flex-grow flex items-center justify-between gap-3 my-2">
+                            <button onclick="prevReview()" class="text-zinc-500 hover:text-cyan-400 hover:bg-zinc-900 border border-transparent hover:border-cyan-800 transition text-sm cursor-pointer p-2 active:scale-90 select-none">◀</button>
+                            
+                            <div id="review-content" class="flex-grow text-center flex flex-col justify-center transition-all duration-300 min-h-[70px] break-keep"></div>
+
+                            <button onclick="nextReview()" class="text-zinc-500 hover:text-cyan-400 hover:bg-zinc-900 border border-transparent hover:border-cyan-800 transition text-sm cursor-pointer p-2 active:scale-90 select-none">▶</button>
+                        </div>
+                        
+                        <div id="review-dots" class="flex justify-center gap-2 mt-auto pt-2 shrink-0"></div>
+                    </div>
+                </div>
+
+                <button onclick="location.reload()" class="text-[12px] text-black bg-cyan-500 hover:bg-white font-bold px-6 py-2 transition cursor-pointer mt-8 block mx-auto tracking-widest break-keep uppercase orbitron">
+                    SYSTEM_REBOOT
+                </button>
+            </div>
+
+        </div>
+
+        <div class="lg:col-span-1 bg-black border border-zinc-800 p-6 h-full max-h-[600px] flex flex-col sticky top-24 relative overflow-hidden transition-all hover:border-cyan-500/50 group" style="clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);">
+            <div class="absolute top-0 right-0 w-10 h-10 border-t-2 border-r-2 border-transparent group-hover:border-cyan-500 transition-colors"></div>
+            
+            <h4 class="text-[12px] font-bold text-yellow-400 border-b border-zinc-700 pb-3 mb-4 tracking-widest break-keep uppercase orbitron">
+                GLOSSARY // DB
+            </h4>
+            <div id="glossary-content" class="text-[12px] text-zinc-300 leading-relaxed space-y-4 overflow-y-auto flex-grow pr-2 relative z-10 font-medium terminal-scroll break-keep">
+                인터페이스 내부의 <span class="term-link text-[10px] px-1 py-0 border-none bg-transparent text-shadow-none">빨간색 용어</span>를 클릭하면 기술적 정의가 파싱됩니다.
+            </div>
+            <div class="text-[10px] text-zinc-500 border-t border-zinc-800 pt-3 mt-4 shrink-0 flex justify-between relative z-10 tracking-widest uppercase bg-black">
+                <span>SUBTLE_CRYPTO</span>
+                <span class="text-green-500 font-bold animate-pulse">ONLINE</span>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="mt-12 mb-8 text-center text-[10px] text-zinc-600 tracking-[0.2em] break-keep uppercase font-bold">
+        © 2026 FEDERAL SHERIFF LAB. <span class="text-cyan-900 ml-2">v9.7.build_omega</span>
+    </footer>
+
+    <script>
+        let originalPixelData = null;
+        let hackProgress = 0;
+        let hackInterval;
+        let defendScore = 0; 
+        let finalEncryptedBytes = 0;
+        let finalUsagePercent = "0%";
+
+        const glossaryDb = {
+            drm: `<b class="text-white text-[13px] border-b border-cyan-800 pb-1 inline-block mb-2">DRM (디지털 저작권 관리)</b><br>콘텐츠를 랩핑하여 접근을 차단하는 관문 보안 기술입니다. 외부 껍데기에 배치되므로 해커가 암호를 무력화하면 원본이 100% 유출되는 구조적 취약점이 있습니다.`,
+            shor: `<b class="text-white text-[13px] border-b border-cyan-800 pb-1 inline-block mb-2">Shor 알고리즘</b><br>양자 컴퓨터의 압도적 연산력(중첩/얽힘)을 활용하여 현대 암호의 근간인 소인수분해 난제를 단숨에 격파하는 강력한 양자 해킹 알고리즘입니다.`,
+            stego: `<b class="text-white text-[13px] border-b border-cyan-800 pb-1 inline-block mb-2">스테가노그라피</b><br>데이터를 단순히 꼬아놓는 것을 넘어, '비밀 데이터가 존재한다는 사실 자체'를 공간적으로 은닉하여 해커의 눈을 원천적으로 속이는 고도의 추적 기법입니다.`,
+            lsb: `<b class="text-white text-[13px] border-b border-cyan-800 pb-1 inline-block mb-2">LSB (최하위 비트)</b><br>픽셀을 이루는 이진 데이터 중 시각적 영향력이 가장 미미한 '끝자리 1비트'를 가공하여, 육안으로는 구별 불가능하게 기밀 데이터를 숨기는 공간 은닉 원리입니다.`,
+            aes: `<b class="text-white text-[13px] border-b border-cyan-800 pb-1 inline-block mb-2">AES-GCM</b><br>현존하는 가장 강력한 대칭 키 암호 표준 규격입니다. 본 시스템에서는 브라우저 보안 샌드박스의 실제 Web Crypto API를 호출하여 구동됩니다.`
+        };
+
+        function showTerm(key) {
+            document.getElementById('glossary-content').innerHTML = glossaryDb[key];
+        }
+
+        function clearCanvasWithSolidColor(canvas, ctx) {
+            ctx.fillStyle = '#050505'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function updateDynamicCapacity() {
+            const canvas = document.getElementById('mainCanvas');
+            const msg = document.getElementById('secretMsg').value;
+            
+            if(canvas.width === 0 || canvas.height === 0) return;
+
+            const maxBytes = Math.floor((canvas.width * canvas.height * 3) / 8);
+            const msgByteSize = new Blob([msg]).size;
+            const usedBytes = 48 + msgByteSize; 
+            const remainingBytes = maxBytes - usedBytes;
+            
+            const capacityInfo = document.getElementById('capacityInfo');
+            
+            if (remainingBytes < 0) {
+                capacityInfo.innerHTML = `ERR: 용량 초과 (${Math.abs(remainingBytes).toLocaleString()} B 부족)`;
+                capacityInfo.className = "text-[11px] tracking-tight bg-pink-900/30 text-white px-4 py-3 border border-pink-500 w-full text-center break-keep";
+            } else {
+                capacityInfo.innerHTML = `잔여 용량: ${remainingBytes.toLocaleString()} B <span class="text-[9px] text-cyan-700 block mt-0.5">(현재 ${usedBytes} B 점유 중)</span>`;
+                capacityInfo.className = "text-[11px] tracking-tight bg-black text-cyan-400 px-4 py-3 border border-cyan-800 w-full text-center transition-colors break-keep";
+            }
+        }
+
+        window.onload = () => { 
+            const canvas = document.getElementById('mainCanvas');
+            const ctx = canvas.getContext('2d');
+            clearCanvasWithSolidColor(canvas, ctx);
+            
+            const img = new Image();
+            img.crossOrigin = "anonymous";
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                updateDynamicCapacity();
+            };
+            img.src = "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?q=80&w=300&auto=format&fit=crop"; 
+            
+            document.getElementById('secretMsg').addEventListener('input', updateDynamicCapacity);
+        };
+
+        document.getElementById('uploadImg').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.getElementById('mainCanvas');
+                const ctx = canvas.getContext('2d');
+                clearCanvasWithSolidColor(canvas, ctx);
+                const scale = Math.min(canvas.width / img.width, canvas.height / img.height);
+                const x = (canvas.width / 2) - (img.width / 2) * scale;
+                const y = (canvas.height / 2) - (img.height / 2) * scale;
+                ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+                updateDynamicCapacity();
+            };
+            img.src = URL.createObjectURL(file);
+        });
+
+        const enc = new TextEncoder();
+        const dec = new TextDecoder();
+
+        async function keyFromPassword(password, salt) {
+            const base = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveKey"]);
+            return crypto.subtle.deriveKey(
+                { name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" },
+                base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+            );
+        }
+
+        function u32(n) { return new Uint8Array([(n>>>24)&255, (n>>>16)&255, (n>>>8)&255, n&255]); }
+        function readU32(arr, off) { return ((arr[off]<<24)>>>0) | ((arr[off+1]<<16)>>>0) | ((arr[off+2]<<8)>>>0) | arr[off+3]; }
+
+        async function encryptMessage(msg, password) {
+            const salt = crypto.getRandomValues(new Uint8Array(16));
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const key = await keyFromPassword(password, salt);
+            const cipher = new Uint8Array(await crypto.subtle.encrypt({name: "AES-GCM", iv}, key, enc.encode(msg)));
+            const payload = new Uint8Array(16 + 12 + cipher.length);
+            payload.set(salt, 0); payload.set(iv, 16); payload.set(cipher, 28);
+            const header = u32(payload.length);
+            const result = new Uint8Array(header.length + payload.length);
+            result.set(header, 0); result.set(payload, 4);
+            return result;
+        }
+
+        async function decryptPayload(bytes, password) {
+            const len = readU32(bytes, 0);
+            const payload = bytes.slice(4, 4 + len);
+            const salt = payload.slice(0, 16);
+            const iv = payload.slice(16, 28);
+            const cipher = payload.slice(28);
+            const key = await keyFromPassword(password, salt);
+            const plain = await crypto.subtle.decrypt({name: "AES-GCM", iv}, key, cipher);
+            return dec.decode(plain);
+        }
+
+        function bytesToBits(bytes) {
+            const bits = [];
+            for (const b of bytes) for (let i = 7; i >= 0; i--) bits.push((b >> i) & 1);
+            return bits;
+        }
+
+        function bitsToBytes(bits) {
+            const out = new Uint8Array(Math.ceil(bits.length / 8));
+            for (let i = 0; i < out.length; i++) {
+                let v = 0;
+                for (let j = 0; j < 8; j++) {
+                    v = (v << 1) | (bits[i * 8 + j] || 0);
+                }
+                out[i] = v;
+            }
+            return out;
+        }
+
+        function nextStage(currentId, nextId) {
+            document.getElementById(currentId).classList.add('hidden');
+            document.getElementById(nextId).classList.remove('hidden');
+            
+            if(nextId === 'stage-result') {
+                updateReview();
+            }
+        }
+
+        async function applyCryptoStego() {
+            const pw = document.getElementById('cryptoPw').value;
+            const msg = document.getElementById('secretMsg').value;
+            if (!pw || !msg) return alert("비밀번호와 암호화할 추적 메시지를 모두 채워주십시오.");
+
+            try {
+                const canvas = document.getElementById('mainCanvas');
+                const ctx = canvas.getContext('2d');
+                
+                const originalImgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                originalPixelData = new Uint8ClampedArray(originalImgData.data);
+                const data = originalImgData.data;
+
+                const payload = await encryptMessage(msg, pw);
+                const bits = bytesToBits(payload);
+
+                const capacityBits = canvas.width * canvas.height * 3;
+                if (bits.length > capacityBits) return alert("용량 초과: 미디어 해상도 대비 텍스트가 너무 깁니다.");
+
+                document.getElementById('statMsgLen').innerText = new Blob([msg]).size;
+                document.getElementById('statEncLen').innerText = payload.length;
+                document.getElementById('dataStats').classList.remove('hidden');
+                
+                finalEncryptedBytes = payload.length;
+                finalUsagePercent = ((bits.length / capacityBits) * 100).toFixed(2) + "%";
+
+                let bi = 0;
+                for (let i = 0; i < data.length && bi < bits.length; i++) {
+                    if ((i + 1) % 4 === 0) continue; 
+                    data[i] = (data[i] & 254) | bits[bi++]; 
+                }
+
+                ctx.putImageData(originalImgData, 0, 0);
+                const stegoDataUrl = canvas.toDataURL("image/png");
+
+                const leakedCanvas = document.getElementById('leakedCanvas');
+                const leakedCtx = leakedCanvas.getContext('2d');
+                leakedCtx.putImageData(originalImgData, 0, 0); 
+
+                const dlBtn = document.getElementById('downloadBtn');
+                dlBtn.href = stegoDataUrl;
+                dlBtn.download = "stego_leaked.png";
+
+                setTimeout(() => {
+                    nextStage('stage-prep', 'stage-attack');
+                    startHackSimulation();
+                }, 1000);
+                
+            } catch (e) {
+                alert("오류 발생: " + e.message);
+            }
+        }
+
+        function startHackSimulation() {
+            hackProgress = 0;
+            defendScore = 0;
+            document.getElementById('hack-bar').style.width = '0%';
+            document.getElementById('hack-percent').innerText = '0%';
+
+            hackInterval = setInterval(() => {
+                hackProgress += 4.5; 
+                if(hackProgress > 100) hackProgress = 100;
+                
+                document.getElementById('hack-bar').style.width = hackProgress + '%';
+                document.getElementById('hack-percent').innerText = Math.floor(hackProgress) + '%';
+
+                if (hackProgress >= 100) {
+                    clearInterval(hackInterval);
+                    nextStage('stage-attack', 'stage-terminal');
+                    startTerminalTyping();
+                }
+            }, 80);
+        }
+
+        function defendHack() {
+            if (hackProgress > 0 && hackProgress < 100) {
+                hackProgress -= 5.5; 
+                defendScore += 220; 
+                if (hackProgress < 0) hackProgress = 0;
+                document.getElementById('hack-bar').style.width = hackProgress + '%';
+                document.getElementById('hack-percent').innerText = Math.floor(hackProgress) + '%';
+            }
+        }
+
+       const terminalLines = [
+            "SYS: 고전 암호화(RSA/ECC) 방어선 완전 붕괴.",
+            "<br>",
+            "블랙햇 해커가 <span class='text-white font-bold bg-pink-900/50 px-1'>Shor 알고리즘</span> 기반 침투를 완료했습니다.",
+            "기존의 암호화는 거대한 소수를 분해하는 '시간'에 의존해왔습니다.",
+            "그러나 큐비트의 중첩(Superposition)과 얽힘 연산 앞에서는",
+            "수천 년이 걸리던 수학적 난제가 단 12초 만에 파훼되었습니다.",
+            "과거에 탈취해둔 암호화 데이터를 양자컴퓨터로 일제히 해독하는",
+            "HNDL(Harvest Now, Decrypt Later) 공격이 현실화되었습니다.",
+            "<br>",
+            "<span class='text-pink-500 font-bold'>[FATAL ERROR] 외부 DRM 아키텍처 파괴 확인.</span>",
+            "수학적 자물쇠가 풀렸습니다. 탈취된 원본 미디어 자산이 다크웹에 유포 중입니다.",
+            "<br>",
+            "...",
+            "<br>",
+            "SYS_RECOVERY_PROTOCOL_INIT //",
+            "<br>",
+            "하지만, 픽셀 내부에 심어둔 <span class='text-cyan-400 font-bold'>LSB(최하위 비트) 스테가노그라피(Steganography)</span> 은닉망은 건재합니다.",
+            "암호학(Cryptography)이 메시지의 '의미'를 숨기는 자물쇠라면,",
+            "스테가노그라피는 메시지의 '존재 자체'를 은닉하는 위장술입니다.",
+            "<br>",
+            "영상과 이미지를 구성하는 RGB 색상값의 가장 미세한 끝자리 비트(LSB).",
+            "우리는 시각적으로 톤 변화를 전혀 느낄 수 없는 그 노이즈의 틈새에",
+            "저작권 식별 코드를 물리적으로 각인했습니다.",
+            "양자 컴퓨터의 연산력이 아무리 뛰어나도,",
+            "애초에 '잠겨있는 암호'가 아닌 '자연스러운 색상 픽셀의 일부'로 위장된 데이터는 타겟팅할 수 없습니다.",
+            "<br>",
+            ">> 수학적 방어는 실패했으나, 물리적 추적은 이제 시작입니다.",
+            ">> 은닉된 픽셀 데이터를 역산하여 최초 유포자를 추출합니다.",
+            ">> 픽셀 포렌식(CSI) 추적 모드를 활성화합니다..."
+        ];
+
+        function skipTyping() {
+            clearTimeout(typingTimer);
+            const textContainer = document.getElementById('typewriter-text');
+            const scrollArea = document.getElementById('terminal-scroll-area');
+            
+            let fullHtml = "";
+            for (let i = 0; i < terminalLines.length; i++) {
+                if (terminalLines[i] === "<br>") {
+                    fullHtml += "<br><br>";
+                } else {
+                    fullHtml += terminalLines[i] + "<br>";
+                }
+            }
+            textContainer.innerHTML = fullHtml;
+            
+            document.getElementById('cursor-block').style.display = "none";
+            document.getElementById('btn-skip-typing').classList.add('hidden');
+            document.getElementById('btn-continue-recovery').classList.remove('hidden');
+            scrollArea.scrollTop = scrollArea.scrollHeight;
+        }
+
+        let typingTimer;
+        function startTerminalTyping() {
+            const textContainer = document.getElementById('typewriter-text');
+            const scrollArea = document.getElementById('terminal-scroll-area');
+            
+            textContainer.innerHTML = "";
+            document.getElementById('btn-continue-recovery').classList.add('hidden');
+            document.getElementById('btn-skip-typing').classList.remove('hidden'); 
+            document.getElementById('cursor-block').style.display = "inline-block";
+
+            let lineIndex = 0;
+            let charIndex = 0;
+            let typedText = ""; 
+
+            function typeWriter() {
+                if (lineIndex < terminalLines.length) {
+                    let currentLine = terminalLines[lineIndex];
+                    
+                    if (currentLine === "<br>") {
+                        typedText += "<br><br>";
+                        textContainer.innerHTML = typedText;
+                        lineIndex++;
+                        charIndex = 0;
+                        scrollArea.scrollTop = scrollArea.scrollHeight;
+                        typingTimer = setTimeout(typeWriter, 300);
+                    } else if (charIndex < currentLine.length) {
+                        if (currentLine.charAt(charIndex) === '<') {
+                            let tag = "";
+                            while (currentLine.charAt(charIndex) !== '>' && charIndex < currentLine.length) {
+                                tag += currentLine.charAt(charIndex);
+                                charIndex++;
+                            }
+                            tag += '>';
+                            typedText += tag;
+                            textContainer.innerHTML = typedText;
+                            charIndex++;
+                        } else {
+                            typedText += currentLine.charAt(charIndex);
+                            textContainer.innerHTML = typedText;
+                            charIndex++;
+                        }
+                        scrollArea.scrollTop = scrollArea.scrollHeight;
+                        typingTimer = setTimeout(typeWriter, 20);
+                    } else {
+                        typedText += "<br>";
+                        textContainer.innerHTML = typedText;
+                        lineIndex++;
+                        charIndex = 0;
+                        scrollArea.scrollTop = scrollArea.scrollHeight;
+                        typingTimer = setTimeout(typeWriter, 150);
+                    }
+                } else {
+                    document.getElementById('cursor-block').style.display = "none";
+                    document.getElementById('btn-skip-typing').classList.add('hidden');
+                    document.getElementById('btn-continue-recovery').classList.remove('hidden');
+                    scrollArea.scrollTop = scrollArea.scrollHeight;
+                }
+            }
+            typeWriter();
+        }
+
+        async function extractCryptoStego() {
+            const pw = document.getElementById('extractPw').value;
+            if (!pw) return alert("복호화 패스워드를 인풋 필드에 주입하십시오.");
+
+            document.getElementById('errorBox').classList.add('hidden');
+
+            try {
+                const leakedCanvas = document.getElementById('leakedCanvas');
+                const ctx = leakedCanvas.getContext('2d');
+                const data = ctx.getImageData(0, 0, leakedCanvas.width, leakedCanvas.height).data;
+
+                const headerBits = [];
+                let p = 0;
+                while (headerBits.length < 32) {
+                    if ((p + 1) % 4 !== 0) headerBits.push(data[p] & 1);
+                    p++;
+                }
+
+                const headerBytes = bitsToBytes(headerBits);
+                const payloadLen = readU32(headerBytes, 0);
+                
+                if (payloadLen > 100000 || payloadLen === 0) throw new Error("Incorrect header or payload");
+
+                const totalBits = (payloadLen + 4) * 8;
+                const bits = [];
+                p = 0;
+                while (bits.length < totalBits && p < data.length) {
+                    if ((p + 1) % 4 !== 0) bits.push(data[p] & 1);
+                    p++;
+                }
+
+                const bytes = bitsToBytes(bits);
+                const text = await decryptPayload(bytes, pw);
+                
+                document.getElementById('finalMsg').innerText = text;
+                document.getElementById('finalScore').innerText = (70000 + defendScore).toLocaleString() + " XP";
+                document.getElementById('finalEncLen').innerText = finalEncryptedBytes + " B";
+                document.getElementById('finalUsage').innerText = finalUsagePercent;
+                
+                renderResultCanvases(leakedCanvas.width, leakedCanvas.height, data);
+                
+                document.getElementById('resultBox')?.classList.remove('hidden');
+                setTimeout(() => {
+                    nextStage('stage-recovery', 'stage-result');
+                }, 800);
+
+            } catch (e) {
+                console.error(e);
+                document.getElementById('errorBox').classList.remove('hidden');
+            }
+        }
+
+        function renderResultCanvases(w, h, stegoData) {
+            const origCanvas = document.getElementById('resOrigCanvas');
+            const origCtx = origCanvas.getContext('2d');
+            const origImgData = origCtx.createImageData(w, h);
+            origImgData.data.set(originalPixelData);
+            origCtx.putImageData(origImgData, 0, 0);
+
+            const stegoCanvas = document.getElementById('resStegoCanvas');
+            const stegoCtx = stegoCanvas.getContext('2d');
+            const newStegoImgData = stegoCtx.createImageData(w, h);
+            newStegoImgData.data.set(stegoData);
+            stegoCtx.putImageData(newStegoImgData, 0, 0);
+
+            const diffCanvas = document.getElementById('resDiffCanvas');
+            const diffCtx = diffCanvas.getContext('2d');
+            const diffImgData = diffCtx.createImageData(w, h);
+
+            for (let i = 0; i < originalPixelData.length; i += 4) {
+                let dr = Math.abs(originalPixelData[i] - stegoData[i]) * 255;
+                let dg = Math.abs(originalPixelData[i+1] - stegoData[i+1]) * 255;
+                let db = Math.abs(originalPixelData[i+2] - stegoData[i+2]) * 255;
+                
+                diffImgData.data[i] = dr;
+                diffImgData.data[i+1] = dg;
+                diffImgData.data[i+2] = db;
+                diffImgData.data[i+3] = 255; 
+            }
+            diffCtx.putImageData(diffImgData, 0, 0);
+        }
+
+        const reviewData = [
+            { icon: "🔒", title: "DRM 방화벽", desc: "외부 헤더를 통제하는 보안 구조. 자물쇠 방식이라 암호 키가 양자컴퓨터에 파괴되면 원본이 유출됩니다." },
+            { icon: "💻", title: "Shor 알고리즘", desc: "양자 컴퓨터의 연산력을 활용해 소인수분해 난제를 격파하는 해킹 알고리즘입니다." },
+            { icon: "🛡️", title: "AES-GCM 암호", desc: "최강의 대칭키 암호화 방식. Web Crypto API를 호출해 커널 수준에서 암호화했습니다." },
+            { icon: "👁️", title: "스테가노그라피", desc: "비밀 데이터의 '존재 자체'를 은닉하여 해커의 눈을 속이는 고도의 추적 기법입니다." },
+            { icon: "🖼️", title: "LSB 은닉", desc: "이미지 픽셀 중 시각적 영향이 없는 가장 깊은 끝자리 비트에 물리적으로 삽입하는 회피 기동입니다." }
+        ];
+
+        let currentReviewIndex = 0;
+
+        function updateReview() {
+            const content = document.getElementById('review-content');
+            const dots = document.getElementById('review-dots');
+            const pageNum = document.getElementById('review-page-num');
+            const data = reviewData[currentReviewIndex];
+
+            content.classList.remove('opacity-100');
+            content.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                pageNum.innerText = currentReviewIndex + 1;
+                content.innerHTML = `
+                    <div class="text-white font-bold text-sm mb-2 tracking-widest">${data.icon} ${data.title}</div>
+                    <div class="text-zinc-400 leading-relaxed font-medium text-[12px] px-2">${data.desc}</div>
+                `;
+                
+                dots.innerHTML = reviewData.map((_, i) => 
+                    `<span class="w-2 h-2 transition-all duration-300 border border-cyan-500 ${i === currentReviewIndex ? 'bg-cyan-400 shadow-[0_0_10px_#00f0ff]' : 'bg-transparent'}"></span>`
+                ).join('');
+
+                content.classList.remove('opacity-0');
+                content.classList.add('opacity-100');
+            }, 150);
+        }
+
+        function prevReview() {
+            currentReviewIndex = (currentReviewIndex - 1 + reviewData.length) % reviewData.length;
+            updateReview();
+        }
+
+        function nextReview() {
+            currentReviewIndex = (currentReviewIndex + 1) % reviewData.length;
+            updateReview();
+        }
+    </script>
+</body>
+</html>
